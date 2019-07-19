@@ -10,7 +10,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service(value = "todoservice")
+@Service(value = "todoService")
 public class TodoServiceImpl implements TodoService
 
 {
@@ -35,7 +35,11 @@ public class TodoServiceImpl implements TodoService
     @Override
     public Todo save(Todo todo)
     {
-        return todorepos.save(todo);
+        Todo newTodo = new Todo();
+        newTodo.setDescription(todo.getDescription());
+        newTodo.setDatestarted(todo.getDatestarted());
+        newTodo.setUser(todo.getUser());
+        return todorepos.save(newTodo);
     }
 
     @Override

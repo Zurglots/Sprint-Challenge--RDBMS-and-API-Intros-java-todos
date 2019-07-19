@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-//import java.util.Date;
+import java.util.Date;
 
 @Transactional
 @Component
@@ -38,17 +38,17 @@ public class SeedData implements CommandLineRunner {
         ArrayList<UserRoles> users = new ArrayList<>();
         users.add(new UserRoles(new User(), r2));
         User u1 = new User("barnbarn", "ILuvM4th!", users);
-        u1.getTodos().add(new Todo("Finish java-orders-swagger", u1));
-        u1.getTodos().add(new Todo("Feed the turtles", u1));
-        u1.getTodos().add(new Todo("Complete the sprint challenge", u1));
+        u1.getTodos().add(new Todo("Finish java-orders-swagger", new Date(), u1));
+        u1.getTodos().add(new Todo("Feed the turtles", new Date(), u1));
+        u1.getTodos().add(new Todo("Complete the sprint challenge", new Date(), u1));
         userrepos.save(u1);
 
         ArrayList<UserRoles> admins = new ArrayList<>();
         admins.add(new UserRoles(new User(), r1));
         admins.add(new UserRoles(new User(), r2));
         User u2 = new User("admin", "password", admins);
-        u2.getTodos().add(new Todo("Walk the dogs", u2));
-        u2.getTodos().add(new Todo("provide feedback to my instructor", u2));
+        u2.getTodos().add(new Todo("Walk the dogs", new Date(), u2));
+        u2.getTodos().add(new Todo("provide feedback to my instructor", new Date(), u2));
         userrepos.save(u2);
 
         users = new ArrayList<>();

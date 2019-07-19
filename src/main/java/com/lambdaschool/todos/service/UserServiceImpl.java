@@ -4,6 +4,7 @@ package com.lambdaschool.todos.service;
 import com.lambdaschool.todos.model.User;
 import com.lambdaschool.todos.model.UserRoles;
 import com.lambdaschool.todos.repository.RoleRepository;
+import com.lambdaschool.todos.repository.ToDoRepository;
 import com.lambdaschool.todos.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService
 
     @Autowired
     private RoleRepository rolerepos;
+
 
     @Transactional
     public User findUserById(long id) throws EntityNotFoundException

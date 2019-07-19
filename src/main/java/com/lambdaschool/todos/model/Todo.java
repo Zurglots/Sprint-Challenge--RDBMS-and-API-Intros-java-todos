@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static javax.persistence.TemporalType.TIMESTAMP;
+
 @Entity
-@Table(name = "todo")
+@Table(name = "todos")
 public class Todo extends Auditable
 {
 
@@ -20,24 +22,27 @@ public class Todo extends Auditable
     @Column(nullable = false)
     private String description;
 
-//    private Date datestarted;
-//    private Boolean completed;
+    @Temporal(TIMESTAMP)
+    private Date datestarted;
+
+    private Boolean completed;
 
     @ManyToOne
-    @JsonIgnoreProperties("todo")
     @JoinColumn(name = "userid")
+    @JsonIgnoreProperties("todos")
     private User user;
+
 
     public Todo() {
     }
-// new Date(), from seed data
+//  from seed data
     //Date datestarted,
 //    Boolean completed,
-    public Todo(String description, User user)
+    public Todo(String description, Date datestarted, User user)
     {
         this.description = description;
-//        this.datestarted = datestarted;
-//        this.completed = completed;
+        this.datestarted = datestarted;
+        this.completed = false;
         this.user = user;
     }
 
@@ -57,14 +62,14 @@ public class Todo extends Auditable
         this.description = description;
     }
 
-//    public Date getDatestarted() {
-//        return datestarted;
-//    }
-//
-//    public void setDatestarted(Date datestarted) {
-//        this.datestarted = datestarted;
-//    }
-//
+    public Date getDatestarted() {
+        return datestarted;
+    }
+
+    public void setDatestarted(Date datestarted) {
+        this.datestarted = datestarted;
+    }
+
 //    public Boolean getCompleted() {
 //        return completed;
 //    }

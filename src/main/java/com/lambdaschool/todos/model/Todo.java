@@ -11,7 +11,7 @@ import java.util.List;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity
-@Table(name = "todos")
+@Table(name = "todo")
 public class Todo extends Auditable
 {
 
@@ -25,7 +25,7 @@ public class Todo extends Auditable
     @Temporal(TIMESTAMP)
     private Date datestarted;
 
-    private Boolean completed;
+    private boolean completed;
 
     @ManyToOne
     @JoinColumn(name = "userid")

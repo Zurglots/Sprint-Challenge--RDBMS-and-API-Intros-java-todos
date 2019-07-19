@@ -35,11 +35,8 @@ public class TodoServiceImpl implements TodoService
     @Override
     public Todo save(Todo todo)
     {
-        Todo newTodo = new Todo();
-        newTodo.setDescription(todo.getDescription());
-        newTodo.setDatestarted(todo.getDatestarted());
-        newTodo.setUser(todo.getUser());
-        return todorepos.save(newTodo);
+
+        return todorepos.save(todo);
     }
 
     @Override

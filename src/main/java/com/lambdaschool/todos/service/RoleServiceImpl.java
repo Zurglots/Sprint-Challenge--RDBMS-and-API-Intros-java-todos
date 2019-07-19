@@ -1,7 +1,5 @@
 package com.lambdaschool.todos.service;
 
-import com.lambdaschool.authenticatedusers.model.Role;
-import com.lambdaschool.authenticatedusers.repository.RoleRepository;
 import com.lambdaschool.todos.model.Role;
 import com.lambdaschool.todos.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;

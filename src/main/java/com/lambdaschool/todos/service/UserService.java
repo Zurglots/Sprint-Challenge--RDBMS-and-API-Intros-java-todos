@@ -1,6 +1,5 @@
 package com.lambdaschool.todos.service;
 
-import com.lambdaschool.authenticatedusers.model.User;
 import com.lambdaschool.todos.model.User;
 
 import java.util.List;

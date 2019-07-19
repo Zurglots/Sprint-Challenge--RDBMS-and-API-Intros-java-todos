@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +30,15 @@ public class User extends Auditable
     @JsonIgnoreProperties("user")
     private List<UserRoles> userRoles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties("user")
+    private List<Todo> todos = new ArrayList<>();
+
     public User()
     {
     }
+    public User(String username, String password, List<UserRoles> userRoles) // List<Todo> todos
 
-    public User(String username, String password, List<UserRoles> userRoles)
     {
         setUsername(username);
         setPassword(password);
@@ -41,7 +46,14 @@ public class User extends Auditable
         {
             ur.setUser(this);
         }
+
         this.userRoles = userRoles;
+
+//        for (Todo t : todos)
+//        {
+//            t.setTodoid(this);
+//        }
+//        this.todos = todos;
     }
 
     public long getUserid()
@@ -84,4 +96,11 @@ public class User extends Auditable
         this.userRoles = userRoles;
     }
 
+    public List<Todo> getTodos() {
+        return todos;
+    }
+
+    public void setTodos(List<Todo> todos) {
+        this.todos = todos;
+    }
 }

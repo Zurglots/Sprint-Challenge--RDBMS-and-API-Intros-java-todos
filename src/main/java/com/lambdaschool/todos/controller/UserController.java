@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -22,6 +24,7 @@ public class UserController
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping(value = "/users", produces = {"application/json"})
     public ResponseEntity<?> listAllUsers()
     {
@@ -29,7 +32,7 @@ public class UserController
         return new ResponseEntity<>(myUsers, HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping(value = "/user/{userId}", produces = {"application/json"})
     public ResponseEntity<?> getUser(@PathVariable Long userId)
     {
@@ -37,6 +40,11 @@ public class UserController
         return new ResponseEntity<>(u, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/mine", produces = {"application/json"})
+    @ResponseBody
+    public ResponseEntity<?> getCurrentUserName(Authentication authentication) {
+        return new ResponseEntity<>(userService.findUserByName(authentication.getName()), HttpStatus.OK);
+    }
 
     @PostMapping(value = "/user", consumes = {"application/json"}, produces = {"application/json"})
     public ResponseEntity<?> addNewUser(@Valid @RequestBody User newuser) throws URISyntaxException

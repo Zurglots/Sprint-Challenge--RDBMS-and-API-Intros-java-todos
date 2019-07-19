@@ -1,6 +1,8 @@
 package com.lambdaschool.todos.controller;
 
+import com.lambdaschool.todos.model.Todo;
 import com.lambdaschool.todos.model.User;
+import com.lambdaschool.todos.service.TodoService;
 import com.lambdaschool.todos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,6 +26,9 @@ public class UserController
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TodoService todoService;
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping(value = "/users", produces = {"application/json"})
@@ -46,6 +52,16 @@ public class UserController
         return new ResponseEntity<>(userService.findUserByName(authentication.getName()), HttpStatus.OK);
     }
 
+    @PostMapping(value = "/todo/{userId}", produces = {"application/json"})
+    public ResponseEntity<?> giveNewTodoToUser(@RequestBody String todo, @PathVariable long userId)
+    {
+        User u = userService.findUserById(userId);
+        Todo giveTodo = new Todo(todo, new Date(), u);
+        todoService.save(giveTodo);
+        return new ResponseEntity<>(null,null, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping(value = "/user", consumes = {"application/json"}, produces = {"application/json"})
     public ResponseEntity<?> addNewUser(@Valid @RequestBody User newuser) throws URISyntaxException
     {
@@ -71,8 +87,8 @@ public class UserController
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    @DeleteMapping("/user/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("/userid/{id}")
     public ResponseEntity<?> deleteUserById(@PathVariable long id)
     {
         userService.delete(id);

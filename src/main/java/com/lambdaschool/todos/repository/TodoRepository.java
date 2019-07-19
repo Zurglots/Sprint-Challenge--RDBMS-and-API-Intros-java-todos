@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface ToDoRepository extends CrudRepository<Todo, Long>
+public interface TodoRepository extends CrudRepository<Todo, Long>
 {
 //    @Transactional
 //    @Modifying

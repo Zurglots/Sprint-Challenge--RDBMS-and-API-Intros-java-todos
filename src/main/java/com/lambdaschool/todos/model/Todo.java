@@ -27,9 +27,9 @@ public class Todo extends Auditable
 
     private boolean completed;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userid")
-    @JsonIgnoreProperties("todos")
+    @JsonIgnoreProperties("todo")
     private User user;
 
 

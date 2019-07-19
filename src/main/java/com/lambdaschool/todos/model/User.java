@@ -30,7 +30,8 @@ public class User extends Auditable
     @JsonIgnoreProperties("users")
     private List<UserRoles> userRoles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",
+                cascade = CascadeType.ALL)
     @JsonIgnoreProperties("user")
     private List<Todo> userTodos = new ArrayList<>();
 

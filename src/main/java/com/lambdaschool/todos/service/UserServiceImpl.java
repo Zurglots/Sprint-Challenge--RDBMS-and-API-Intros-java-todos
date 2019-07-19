@@ -1,10 +1,10 @@
 package com.lambdaschool.todos.service;
 
 
+import com.lambdaschool.todos.model.Todo;
 import com.lambdaschool.todos.model.User;
 import com.lambdaschool.todos.model.UserRoles;
 import com.lambdaschool.todos.repository.RoleRepository;
-import com.lambdaschool.todos.repository.ToDoRepository;
 import com.lambdaschool.todos.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,6 +66,10 @@ public class UserServiceImpl implements UserService
         }
         newUser.setUserRoles(newRoles);
 
+        for (Todo t : user.getUserTodos())
+        {
+            newUser.getUserTodos().add(new Todo(t.getDescription(), t.getDatestarted(), newUser));
+        }
         return userrepos.save(newUser);
     }
 

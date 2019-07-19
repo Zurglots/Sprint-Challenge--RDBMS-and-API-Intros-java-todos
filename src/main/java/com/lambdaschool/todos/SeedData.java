@@ -5,7 +5,7 @@ import com.lambdaschool.todos.model.Todo;
 import com.lambdaschool.todos.model.User;
 import com.lambdaschool.todos.model.UserRoles;
 import com.lambdaschool.todos.repository.RoleRepository;
-import com.lambdaschool.todos.repository.ToDoRepository;
+import com.lambdaschool.todos.repository.TodoRepository;
 import com.lambdaschool.todos.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -19,9 +19,9 @@ import java.util.Date;
 public class SeedData implements CommandLineRunner {
     RoleRepository rolerepos;
     UserRepository userrepos;
-    ToDoRepository todorepos;
+    TodoRepository todorepos;
 
-    public SeedData(RoleRepository rolerepos, UserRepository userrepos, ToDoRepository todorepos) {
+    public SeedData(RoleRepository rolerepos, UserRepository userrepos, TodoRepository todorepos) {
         this.rolerepos = rolerepos;
         this.userrepos = userrepos;
         this.todorepos = todorepos;

@@ -1,7 +1,7 @@
 package com.lambdaschool.todos.service;
 
 import com.lambdaschool.todos.model.Todo;
-import com.lambdaschool.todos.repository.ToDoRepository;
+import com.lambdaschool.todos.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +15,7 @@ public class TodoServiceImpl implements TodoService
 
 {
     @Autowired
-    private ToDoRepository todorepos;
+    private TodoRepository todorepos;
 
     @Transactional
     @Override

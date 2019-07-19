@@ -2,11 +2,16 @@ package com.lambdaschool.todos.service;
 
 
 import com.lambdaschool.todos.model.Todo;
-import com.lambdaschool.todos.model.User;
 import com.lambdaschool.todos.model.UserRoles;
+import com.lambdaschool.todos.model.User;
 import com.lambdaschool.todos.repository.RoleRepository;
 import com.lambdaschool.todos.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +21,7 @@ import java.util.List;
 
 
 @Service(value = "userService")
-public class UserServiceImpl implements UserService
+public class UserServiceImpl implements UserDetailsService, UserService
 {
 
     @Autowired
@@ -25,11 +30,21 @@ public class UserServiceImpl implements UserService
     @Autowired
     private RoleRepository rolerepos;
 
-
     @Transactional
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+    {
+        User user = userrepos.findByUsername(username);
+        if (user == null)
+        {
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthority());
+    }
+
     public User findUserById(long id) throws EntityNotFoundException
     {
-        return userrepos.findById(id).orElseThrow(() -> new EntityNotFoundException(Long.toString(id)));
+        return userrepos.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Long.toString(id)));
     }
 
     public List<User> findAll()
@@ -45,7 +60,8 @@ public class UserServiceImpl implements UserService
         if (userrepos.findById(id).isPresent())
         {
             userrepos.deleteById(id);
-        } else
+        }
+        else
         {
             throw new EntityNotFoundException(Long.toString(id));
         }
@@ -57,7 +73,7 @@ public class UserServiceImpl implements UserService
     {
         User newUser = new User();
         newUser.setUsername(user.getUsername());
-        newUser.setPassword(user.getPassword());
+        newUser.setPasswordNoEncrypt(user.getPassword());
 
         ArrayList<UserRoles> newRoles = new ArrayList<>();
         for (UserRoles ur : user.getUserRoles())
@@ -70,6 +86,7 @@ public class UserServiceImpl implements UserService
         {
             newUser.getUserTodos().add(new Todo(t.getDescription(), t.getDatestarted(), newUser));
         }
+
         return userrepos.save(newUser);
     }
 
@@ -81,7 +98,8 @@ public class UserServiceImpl implements UserService
         if (currentUser != null)
         {
             return currentUser;
-        } else
+        }
+        else
         {
             throw new EntityNotFoundException(name);
         }
@@ -91,33 +109,55 @@ public class UserServiceImpl implements UserService
     @Override
     public User update(User user, long id)
     {
-        User currentUser = userrepos.findById(id).orElseThrow(() -> new EntityNotFoundException(Long.toString(id)));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userrepos.findByUsername(authentication.getName());
 
-        if (user.getUsername() != null)
+        if (currentUser != null)
         {
-            currentUser.setUsername(user.getUsername());
-        }
-
-        if (user.getPassword() != null)
-        {
-            currentUser.setPassword(user.getPassword());
-        }
-
-        if (user.getUserRoles().size() > 0)
-        {
-            // with so many relationships happening, I decided to go
-            // with old school queries
-            // delete the old ones
-            rolerepos.deleteUserRolesByUserId(currentUser.getUserid());
-
-            // add the new ones
-            for (UserRoles ur : user.getUserRoles())
+            if (id == currentUser.getUserid())
             {
-                rolerepos.insertUserRoles(id, ur.getRole().getRoleid());
+                if (user.getUsername() != null)
+                {
+                    currentUser.setUsername(user.getUsername());
+                }
+
+                if (user.getPassword() != null)
+                {
+                    currentUser.setPasswordNoEncrypt(user.getPassword());
+                }
+
+                if (user.getUserRoles().size() > 0)
+                {
+                    // with so many relationships happening, I decided to go
+                    // with old school queries
+                    // delete the old ones
+                    rolerepos.deleteUserRolesByUserId(currentUser.getUserid());
+
+                    // add the new ones
+                    for (UserRoles ur : user.getUserRoles())
+                    {
+                        rolerepos.insertUserRoles(id, ur.getRole().getRoleid());
+                    }
+                }
+
+                if (user.getUserTodos().size() > 0)
+                {
+                    for (Todo t : user.getUserTodos())
+                    {
+                        currentUser.getUserTodos().add( new Todo(t.getDescription(), t.getDatestarted(), currentUser));
+                    }
+                }
+                return userrepos.save(currentUser);
+            }
+            else
+            {
+                throw new EntityNotFoundException(Long.toString(id) + " Not current user");
             }
         }
+        else
+        {
+            throw new EntityNotFoundException(authentication.getName());
+        }
 
-        return userrepos.save(currentUser);
     }
 }
-
